@@ -4,7 +4,7 @@
       return;
     }
 
-    cj.fn.crmRegionLookup = function (country) {
+    cj.fn.crmRegionLookup = function (source, country, num) {
       return this.each(function () {
         $this = cj(this);
 
@@ -15,21 +15,73 @@
         $this.addClass('crm-regionlookup-processed');
 
         $this.focusout(function () {
-          crmFetchData($this, country);
+          crmFetchData(source, country, num);
         });
       });
     };
 
-    // Always enable on the main element
-    cj(CRM.regionlookup.source).crmRegionLookup(CRM.regionlookup.source_country);
+    // Generate regular expression to search for source field
+    var rlsource_regex = CRM.regionlookup.source;
+    var rlsource_arr;
+
+    // Separate class and type of object from its id
+    var rlsource_id = CRM.regionlookup.source.split("#");
+    if (rlsource_id.length == 2) {
+      // Get the start and end of the object id
+      rlsource_arr = rlsource_id[1].split("&");
+      if (rlsource_arr.length == 2) {
+        rlsource_regex = rlsource_id[0] + "[id^=" + rlsource_arr[0] + "][id$=" + rlsource_arr[1] + "]";
+      }
+    }
+    else {
+      // Get the start and end of the object id
+      rlsource_arr = CRM.regionlookup.source.split("&");
+      if (rlsource_arr.length == 2) {
+        rlsource_regex = "[id^=" + rlsource_arr[0] + "][id$=" + rlsource_arr[1] + "]";
+      }
+    }
+
+    // Search for objects that meet the regular expression
+    $(rlsource_regex).each(function(index) {
+      var rlsource_num = "1";
+
+      // Get address index
+      if (rlsource_arr.length == 2) {
+        rlsource_num = $(this).attr("id").replace(rlsource_arr[0],"").replace(rlsource_arr[1],"");
+      }
+
+      // Replace multi-address wildcard
+      var rlsource = CRM.regionlookup.source.replace(/&/,rlsource_num);
+      var rlsource_country = CRM.regionlookup.source_country.replace(/&/,rlsource_num);
+
+      // Always enable on the main element
+      cj(rlsource).crmRegionLookup($(rlsource),rlsource_country,rlsource_num);
+
+    });
 
     // After ajax calls, check to see if there are new elements to handle.
     $(document).ajaxComplete(function (event, request, settings) {
-      cj(CRM.regionlookup.source).crmRegionLookup(CRM.regionlookup.source_country);
+      // Search for objects that meet the regular expression
+      $(rlsource_regex).each(function(index) {
+        var rlsource_num = "1";
+
+        // Get address index
+        if (rlsource_arr.length == 2) {
+          rlsource_num = $(this).attr("id").replace(rlsource_arr[0],"").replace(rlsource_arr[1],"");
+        }
+
+        // Replace multi-address wildcard
+        var rlsource = CRM.regionlookup.source.replace(/&/,rlsource_num);
+        var rlsource_country = CRM.regionlookup.source_country.replace(/&/,rlsource_num);
+
+        cj(rlsource).crmRegionLookup($(rlsource),rlsource_country,rlsource_num);
+
+      });
     });
 
-    function crmFetchData(selector, country) {
-      if (!$this.val()) {
+    function crmFetchData(selector, country, num) {
+
+      if (!selector.val()) {
         return;
       }
 
@@ -38,9 +90,9 @@
       var excluded_fields = ['source', 'source_country'];
 
       if (country_selected != '') {
-        var query = CRM.url('civicrm/regionlookup/postcode/') + country_selected + '/' + $this.val() + '.json';
+        var query = CRM.url('civicrm/regionlookup/postcode/') + country_selected + '/' + selector.val() + '.json';
       } else {
-        var query = CRM.url('civicrm/regionlookup/postcode/') + 'all/' + $this.val() + '.json';
+        var query = CRM.url('civicrm/regionlookup/postcode/') + 'all/' + selector.val() + '.json';
       }
 
       $.getJSON(query, function (data) {
@@ -50,7 +102,8 @@
             $.each(data, function (key, val) {
               $.each(val, function (keyint, valint) {
                 if ((keyint != 'source' && CRM.regionlookup[keyint]) && (keyint != 'source_country' && CRM.regionlookup[keyint])) {
-                  $(CRM.regionlookup[keyint]).val(valint).change();
+                  // Replace & for address counter
+                  $(CRM.regionlookup[keyint].replace(/&/,num)).val(valint).change();
                 }
               });
             });
@@ -59,15 +112,25 @@
             cities += '<ul>';
             // More than one data is found
             $.each(data, function (key, val) {
+              city_onclick = '';
               $.each(val, function (keyint, valint) {
-                if ((keyint != 'source' && CRM.regionlookup[keyint]) && (keyint != 'source_country' && CRM.regionlookup[keyint])) {
-                  $(CRM.regionlookup[keyint]).val(valint).change();
+                if (keyint != 'source' && keyint != 'source_country') {
+                  // Prepare city picker
                   if (keyint === 'city') {
-                    var link_constructor = '<a href="#" title=' + keyint + ' onclick="cj(\'' + CRM.regionlookup[keyint] + '\').val(\'' + valint + '\').change();return false;">' + valint + '</a>';
-                    cities += '<li class="suggested-' + key + '">' + CRM.regionlookup.tr_city + ': ' + link_constructor + '</li>';
+                    city_keyint = keyint;
+                    city_key = key;
+                    city_valint = valint;
+                  }
+
+                  // When selecting a city, you can also change fields
+                  if (valint && CRM.regionlookup[keyint]) {
+                    city_onclick += 'cj(\'' + CRM.regionlookup[keyint].replace(/&/,num) + '\').val(\'' + valint + '\').change();';
                   }
                 }
               });
+              // Prepare city picker
+              var link_constructor = '<a href="#" title=' + city_keyint + ' onclick="' + city_onclick + 'return false;">' + city_valint + '</a>';
+              cities += '<li class="suggested-' + city_key + '">' + CRM.regionlookup.tr_city + ': ' + link_constructor + '</li>';
             });
             cities += '</ul>';
             cities += CRM.regionlookup.tr_city_selector;

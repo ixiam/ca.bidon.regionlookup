@@ -43,6 +43,7 @@ class CRM_Regionlookup_BAO_Regionlookup {
   static function getSearchOtherOptions() {
     return array(
       'searchchars' => ts('How many characters to send to the lookup query?'),
+      'city_name' => ts('City name'),
     );
   }
 

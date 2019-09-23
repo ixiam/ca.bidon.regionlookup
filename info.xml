@@ -9,8 +9,8 @@ Once installed, a new menu item will be added to the System Settings (Administer
     <author>Mathieu Lutfy</author>
     <email>mathieu@bidon.ca</email>
   </maintainer>
-  <releaseDate>2019-02-27</releaseDate>
-  <version>2.0</version>
+  <releaseDate>2019-09-23</releaseDate>
+  <version>2.1.0</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>4.7</ver>

@@ -1,7 +1,9 @@
 <div class="crm-block crm-form-block crm-regionlookup-form-block">
   <fieldset>
     <legend>{ts}Lookup field{/ts}</legend>
-    <div class="help">{ts}Field used for the lookup. This should be the postcode field in the CiviCRM billing block of contribution forms. If empty, it will disable the lookup function. Use the "inspect element" function of your browser to determine the correct selector.{/ts}</div>
+    <div class="help">{ts}Field used for the lookup. This should be the postcode field in the CiviCRM billing block of contribution forms. If empty, it will disable the lookup function. Use the "inspect element" function of your browser to determine the correct selector.{/ts}
+        {ts}In 'Field selector' always use '#' for the field id and '&' instead of the address number for the extension to work with multiple addresses{/ts}
+    </div>
 
     <table class="form-layout-compressed">
       <tr>
@@ -109,6 +111,18 @@
       <tr>
         <td class="label">{$form.callback.label}</td>
         <td>{$form.callback.html}</td>
+      </tr>
+    </table>
+  </fieldset>
+
+  <fieldset>
+    <legend>{ts}Custom city name{/ts}</legend>
+    <div class="help">{ts}Custom city name for multiple results found.{/ts}</div>
+
+    <table class="form-layout-compressed">
+      <tr>
+        <td class="label">{$form.city_name.label}</td>
+        <td>{$form.city_name.html}</td>
       </tr>
     </table>
   </fieldset>

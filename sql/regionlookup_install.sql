@@ -11,6 +11,6 @@ CREATE TABLE IF NOT EXISTS `civicrm_regionlookup` (
   `county` varchar(127) NOT NULL DEFAULT '',
   `state` varchar(127) NOT NULL DEFAULT '',
   `country` varchar(127) NOT NULL DEFAULT '',
-  `state_riding` varchar(127) NOT NULL DEFAULT '',
-  `country_riding` varchar(127) NOT NULL DEFAULT ''
+  `stateriding` varchar(127) NOT NULL DEFAULT '',
+  `countryriding` varchar(127) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

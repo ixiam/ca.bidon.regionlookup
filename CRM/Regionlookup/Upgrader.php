@@ -7,6 +7,27 @@ use CRM_Regionlookup_ExtensionUtil as E;
  */
 class CRM_Regionlookup_Upgrader extends CRM_Regionlookup_Upgrader_Base {
 
+  public function upgrade_4604() {
+    $stored_settings = Civi::settings()->get('regionlookup_settings');
+    $stored_settings['other']['city_name'] = 'City';
+
+    try {
+      Civi::settings()->set('regionlookup_settings', $stored_settings);
+    }
+    catch (Exception $ex) {
+      CRM_Core_Error::debug_log_message("Unable to store settings. Error: " . $ex);
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  public function upgrade_4603() {
+    $this->ctx->log->info('Applying update 4603');
+    $this->executeSqlFile('sql/regionlookup_4603.sql');
+    return TRUE;
+  }
+
   public function upgrade_4602() {
     // Move all settings from old format to new format
     $settings = array();

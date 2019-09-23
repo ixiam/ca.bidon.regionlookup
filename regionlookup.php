@@ -186,8 +186,8 @@ function regionlookup_civicrm_buildForm($formName, &$form) {
   $translations = array(
     'tr_multiple_records_title' => ts("Multiple results were found. Please select your preferred option by clicking on the link(s) below", array('domain' => 'ca.bidon.regionlookup')),
     'tr_multiple_results' => ts('Multiple results found', array('domain' => 'ca.bidon.regionlookup')),
-    'tr_city' => ts('City'),
-    'tr_city_selector' => ts('Please select a city', array('domain' => 'ca.bidon.regionlookup')),
+    'tr_city' => ts($settings['city_name']),
+    'tr_city_selector' => ts('Please select a ' . $settings['city_name'], array('domain' => 'ca.bidon.regionlookup')),
   );
 
   if ($formName == 'CRM_Contact_Form_Contact' || $formName == 'CRM_Contact_Form_Inline_Address' || $formName == 'CRM_Activity_Form_ActivityLinks') {
