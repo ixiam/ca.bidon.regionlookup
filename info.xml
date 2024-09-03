@@ -9,11 +9,11 @@ Once installed, a new menu item will be added to the System Settings (Administer
     <author>Mathieu Lutfy</author>
     <email>mathieu@bidon.ca</email>
   </maintainer>
-  <releaseDate>2019-09-23</releaseDate>
-  <version>2.1.0</version>
+  <releaseDate>2024-09-03</releaseDate>
+  <version>3.0.0</version>
   <develStage>stable</develStage>
   <compatibility>
-    <ver>5.38</ver>
+    <ver>5.69</ver>
   </compatibility>
   <comments>CiviCRM extension based on the Drupal-based module civicrm_regionlookup. Still lacks proper import/update of lookup data.</comments>
   <urls>
