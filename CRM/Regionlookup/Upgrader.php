@@ -5,7 +5,7 @@ use CRM_Regionlookup_ExtensionUtil as E;
 /**
  * Collection of upgrade steps.
  */
-class CRM_Regionlookup_Upgrader extends CRM_Regionlookup_Upgrader_Base {
+class CRM_Regionlookup_Upgrader extends CRM_Extension_Upgrader_Base {
 
   public function upgrade_4604() {
     $stored_settings = Civi::settings()->get('regionlookup_settings');
